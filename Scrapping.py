@@ -11,10 +11,12 @@ soup = BeautifulSoup(text, features="html.parser")
 
 
 articles = soup.find_all('article')
+
 for article in articles:
-    title = [h.text.strip for h in article.find_all('a', class_='hub-links')]
+    title = {h.text.strip() for h in article.find_all('a', class_='hub-link')}
+    print(title)
 
 #   time = {h.text.strip() for h in article.find_all('time', class_ = 'title')}
 #   link = {h.text.strip() for h in article.find_all('a', class_ = 'hub-link')}
 #   content =  {h.text.strip() for h in article.find_all('article', class_= 'post post preview')}
-print(title)
+# print(title)
