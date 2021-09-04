@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests 
 
-KEYWORDS = {'дизайн', 'фото', 'web', 'python'}
+KEYWORDS = {'2004', 'фото', 'web', 'python'}
 
 site = requests.get('https://habr.com/ru/all/')
 if not site.ok:
@@ -9,14 +9,15 @@ if not site.ok:
 text = site.text
 soup = BeautifulSoup(text, features="html.parser")
 
+# tm-article-snippet__title
+#<time datetime="2021-08-20T09:56:00.000Z" #title="2021-08-20, 11:56">сегодня в 11:56</time>
 
 articles = soup.find_all('article')
-
 for article in articles:
-    title = {h.text.strip() for h in article.find_all('a', class_='hub-link')}
-    print(title)
-
-#   time = {h.text.strip() for h in article.find_all('time', class_ = 'title')}
-#   link = {h.text.strip() for h in article.find_all('a', class_ = 'hub-link')}
-#   content =  {h.text.strip() for h in article.find_all('article', class_= 'post post preview')}
-# print(title)
+    title = article.find('a', class_='tm-article-snippet__title-link').text
+    time = article.find('time').text 
+    link = article.find('a', class_='tm-article-snippet__title-link').attrs.get('href')
+    preview = article.find('div', class_='article-formatted-body').text
+    new_preview = set(preview.split(' '))
+    if new_preview & KEYWORDS:
+      print(f'{title} — {time} — {link}')
